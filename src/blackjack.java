@@ -5,9 +5,8 @@ import java.util.Scanner;
 public class blackjack {
 
     static int randomNumber;
-    static player p = new player();
-    static dealer d = new dealer();
-
+    public static Player p = new Player();
+    public static Player d = new Player();
     static boolean ja;
 
     public static void random() {
@@ -16,23 +15,22 @@ public class blackjack {
     }
 
     public static void blackjacks() {
-
         System.out.println("Das ist Blackjack, deine erste karte ist");
-        random();
-        p.wert = randomNumber;
-        p.karten[0] = new Cards(randomNumber);
-        System.out.println(p.karten[0]);
+        setCardForPlayer(p,0);
 
         System.out.println("Die erste Karte des dealers ist:");
-        random();
-        d.wert = randomNumber;
-        System.out.println(d.wert);
+        setCardForPlayer(d,0);
 
         System.out.println("deine zweite Karte ist eine");
-        random();
-        p.wert = p.wert + randomNumber;
-        System.out.println(randomNumber);
+        setCardForPlayer(p,1);
+
+
         hit();
+    }
+    public static void setCardForPlayer(Player p, int index){
+        random();
+        p.setKarten(randomNumber,index);
+        System.out.println(p.getKarten()[index]);
     }
 
     public static void hit(){
@@ -44,39 +42,47 @@ public class blackjack {
             if (Objects.equals(hitnot, "Y")) {
                 ja = true;
                 random();
-                p.wert = p.wert + randomNumber;
-                if (p.wert > 21) {
-                    System.out.println("du hast " + p.wert);
+                if (p.getCardsValue() > 21) {
+
+                    for (int i = 0; i < p.getKarten().length; i++) {
+                        if (p.getKarten()[i] == 11) {
+                            p.setKarten(1, i);
+                            System.out.println("das Ass wird zu einer 1 und du hast jetzt " + p.getCardsValue());
+                            hit();
+                        }
+                    }
+                    System.out.println("du hast " + p.getCardsValue());
                     System.out.println("Player bust You Lose");
                     nochmal();
+
+
                 }
-                System.out.println(p.wert);
+                System.out.println(p.getCardsValue());
 
             }else {
                 ja = false;
                 random();
-                d.wert = d.wert + randomNumber;
-                System.out.println("der dealer hat " + d.wert);
+                System.out.println("der dealer hat " + d.getCardsValue());
 
-                while (d.wert < p.wert && d.wert < 17) {
+                while (d.getCardsValue() < p.getCardsValue() && d.getCardsValue() < 17) {
                     random();
-                    d.wert = d.wert + randomNumber;
-                    System.out.println("dealer nimmt noch eine karte und hat " + d.wert);
-                    if (d.wert > 21) {
+                    System.out.println("dealer nimmt noch eine karte und hat " + d.getCardsValue());
+                    if (d.getCardsValue() > 21) {
                         System.out.println("Dealer bust You Win");
                         nochmal();
 
                     }
                 }
 
-                if (d.wert > p.wert) {
-                    System.out.println("der dealer hat insgesamt " + d.wert + ". Du hast insgesamt " + p.wert);
+                if (d.getCardsValue() > p.getCardsValue()) {
+                    System.out.println("der dealer hat insgesamt " + d.getCardsValue() + ". Du hast insgesamt " + p.getCardsValue());
                     System.out.println("dealer hat mehr. Du verlierst");
                     nochmal();
                 } else {
-                    System.out.println("der dealer hat insgesamt " + d.wert + ". Du hast insgesamt " + p.wert);
+                    System.out.println("der dealer hat insgesamt " + d.getCardsValue() + ". Du hast insgesamt " + p.getCardsValue());
                     System.out.println("Du gewinnst");
                     nochmal();
+
                 }
 
             }
@@ -98,3 +104,4 @@ public class blackjack {
 
 
 }
+
